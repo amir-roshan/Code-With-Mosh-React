@@ -1,14 +1,16 @@
+// we use react-hook-form to handle form submission when it gets complicated to use     useState and useRef
 import { FieldValues, useForm } from "react-hook-form";
-import { z } from "zod";
 
-z.object({});
-
+// we define a FormData interface to type the form data
+// it gives us the better develoment experience and type checking
 interface FormData {
   name: string;
   year: number;
 }
 
-const Form = () => {
+const FormReactHookForm = () => {
+  // nested destructuring in the following line
+  // optiona chaining operator is used to avoid runtime error if formState is undefined
   const {
     register,
     handleSubmit,
@@ -57,4 +59,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default FormReactHookForm;

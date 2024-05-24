@@ -1,11 +1,5 @@
-import Form from "./Building Forms/Form";
-
 const App = () => {
-  return (
-    <>
-      <Form />
-    </>
-  );
+  return <></>;
 };
 
 export default App;
