@@ -1,5 +1,11 @@
+import FormZod from "./Building Forms/FormZod";
+
 const App = () => {
-  return <></>;
+  return (
+    <>
+      <FormZod />
+    </>
+  );
 };
 
 export default App;
