@@ -1,23 +1,18 @@
-import ProductList from "./components/ProductList";
-import { useState } from "react";
+import { useEffect } from "react";
+
+// to simulate connecting to a chat server
+const connect = () => console.log("connecting to chat server");
+const disconnect = () => console.log("disconnecting from chat server");
 
 const App = () => {
-  const [category, setCategory] = useState("");
-  return (
-    <>
-      <select
-        // we use onChange to update the state when the user selects a category
-        // the event object is used to get the value of the selected option
-        onChange={(event) => setCategory(event.target.value)}
-        className="form-control"
-      >
-        <option value=""></option>
-        <option value="Clothing">Clothing</option>
-        <option value="Household">Household</option>
-      </select>
-      <ProductList category={category} />
-    </>
-  );
+  useEffect(() => {
+    connect();
+
+    // cleanup function
+    // a function that runs when the component is unmounted
+    return () => disconnect();
+  });
+  return <></>;
 };
 
 export default App;
