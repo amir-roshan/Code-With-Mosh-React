@@ -4,7 +4,7 @@
 
 // Understanding the principles behind HTTP Request and handling errors
 
-import axios, { AxiosError } from "axios";
+import axios, { CanceledError } from "axios";
 import { useEffect, useState } from "react";
 // We use an interface to add type and auto-completion to the data we get from the API
 // This is a good practice because it makes the code more readable and maintainable
@@ -20,25 +20,28 @@ const App = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    // get -> a promise -> response/error
-    // get -> await promise -> response/error
-    // Some people don't like to use then and catch, they prefer async/await
-    // Mosh prefers to do promises with then and catch
-    const fetchUsers = async () => {
-      // we use try/catch to handle errors because we are using async/await
-      try {
-        const res = await axios.get<User[]>(
-          "https://jsonplaceholder.typicode.com/users"
-        );
-        setUsers(res.data);
-      } catch (error) {
-        // We can use the AxiosError interface to get the error message
-        setError((error as AxiosError).message);
-      }
-    };
+    // it allows us to cancle or abort the asynchronous operations
+    const controller = new AbortController();
 
-    // after the component has been rendered, we call the fetchUsers function
-    fetchUsers();
+    // what if the user navigates to another page before the request is completed?
+    // we need to cancel the request to avoid memory leaks
+    // in the get method, we have a second argument that is an object
+    // which we can pass the configuration object
+    axios
+      .get("https://jsonplaceholder.typicode.com/users", {
+        signal: controller.signal,
+      })
+      .then((response) => setUsers(response.data))
+      .catch((error) => {
+        // if the error is an instance of CanceledError, we return
+        if (error instanceof CanceledError) return;
+
+        setError(error.message);
+      });
+
+    // we return a cleanup function to cancel the request
+    // The first request is cancled because as part of mounting the component, the cleanup function is called
+    return () => controller.abort();
   }, []);
 
   return (
