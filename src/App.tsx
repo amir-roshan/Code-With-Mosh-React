@@ -4,9 +4,8 @@
 
 // Understanding the principles behind HTTP Request and handling errors
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-
 // We use an interface to add type and auto-completion to the data we get from the API
 // This is a good practice because it makes the code more readable and maintainable
 interface User {
@@ -21,15 +20,25 @@ const App = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    // When we call the get method, axios sends a GET request to the specified URL
-    // HTTP is hypertext transfer protocol and GET is one of the methods used to request data from a server
-    // Request and Response are the two main parts of HTTP
-    // xhr = XMLHttpRequest
-    // Every request and response has a header (metadata) and a body (data)
-    axios
-      .get<User[]>("https://jsonplaceholder.typicode.com/users")
-      .then((response) => setUsers(response.data))
-      .catch((error) => setError(error.message));
+    // get -> a promise -> response/error
+    // get -> await promise -> response/error
+    // Some people don't like to use then and catch, they prefer async/await
+    // Mosh prefers to do promises with then and catch
+    const fetchUsers = async () => {
+      // we use try/catch to handle errors because we are using async/await
+      try {
+        const res = await axios.get<User[]>(
+          "https://jsonplaceholder.typicode.com/users"
+        );
+        setUsers(res.data);
+      } catch (error) {
+        // We can use the AxiosError interface to get the error message
+        setError((error as AxiosError).message);
+      }
+    };
+
+    // after the component has been rendered, we call the fetchUsers function
+    fetchUsers();
   }, []);
 
   return (
