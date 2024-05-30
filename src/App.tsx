@@ -2,6 +2,8 @@
 // but a better way is to use the axios library
 // npm install axios
 
+// Understanding the principles behind HTTP Request and handling errors
+
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -15,25 +17,25 @@ interface User {
 }
 
 const App = () => {
+  const [error, setError] = useState("");
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    // we pass the URL of the API end pint to the get method
-    // this method returns a promise because it is an asynchronous operation which means it takes some time to complete
-    // A promise is an object that represents the eventual completion (or failure) of an asynchronous operation and its resulting value.
-    // Asynchronous is just a fancy way of saying that something takes time to complete.
-    // We can specify the type of data we expect to get from the API by passing it as a type argument to the get method
-    // All promises have a then method which is called when the promise is resolved
-    // Always add the dependencies array to the useEffect hook to avoid infinite loops
+    // When we call the get method, axios sends a GET request to the specified URL
+    // HTTP is hypertext transfer protocol and GET is one of the methods used to request data from a server
+    // Request and Response are the two main parts of HTTP
+    // xhr = XMLHttpRequest
+    // Every request and response has a header (metadata) and a body (data)
     axios
       .get<User[]>("https://jsonplaceholder.typicode.com/users")
-      .then((response) => setUsers(response.data));
+      .then((response) => setUsers(response.data))
+      .catch((error) => setError(error.message));
   }, []);
 
   return (
     <>
       <h2>Users</h2>
-      <h2>{users.length}</h2>
+      {error && <h2 className="text-danger">{error}</h2>}
       {users.map((user) => {
         // Don't forget to return the JSX element
         return <li key={user.id}>{user.name}</li>;

@@ -17,7 +17,7 @@ const AppUseEffect = () => {
 
   // we call effect hook multiple times, but it only runs once after the component has been rendered
   useEffect(() => {
-    document.title = "Reacr Cookbook";
+    document.title = "React Cookbook";
   });
 
   return (
